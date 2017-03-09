@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>class 5 - states</title>
+<title>class 3 - states</title>
 <style>
 body {
   position: absolute;
@@ -36,6 +36,7 @@ var usgs_data;
 var width = 960, height = 500, padding = 38;
 var oColorScaleDefn=["1-2",
 				"2-3","3-4%","4 and up"];
+
 var data;  // declare a global variable
 var svg = d3.select("body").append("svg")
     .attr("width", width)
@@ -70,6 +71,7 @@ var usgs = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.g
   
 // If you use this URL, you won't need your own copy of the data.
 var url = "https://umbcvis.github.io/classes/class-03/us.json"
+
   
  
   
@@ -116,6 +118,7 @@ function plotStates(error, json) {
       return (d.properties.mag >= 4.0)
     });
   }
+
   
   
  
@@ -123,9 +126,12 @@ function plotStates(error, json) {
   var ordinal = d3.scaleOrdinal()
   .domain(["1.0 - 2.0", "2.0 - 3.0", "3.0 - 4.0", "4.0 +"])
   .range([ "rgb(50, 205, 50)", "rgb(255, 255, 0)", "rgb(255, 140, 0)", "rgb(255, 0, 0)"]);
+
   var svg2 = d3.select("svg").append("svg")
   .attr("x", 825)
   .attr("y", 450);
+
+
   var legend = svg.append("g")
 	    .attr("class", "legend")
 	    .attr("x", (width - padding*1.5))
@@ -143,43 +149,22 @@ function plotStates(error, json) {
 	      .attr("width",10)
 	      .style("fill", function (d,i) {
 			if (i==0)
-			 return "rgb(255,127,80)"; /* orange */
-			else
-              var t= 80+i;
-             console.log(i);
- 
-			 return "rgb(255,127,80)";
+			 return "rgb(240,128,128)"; /* orange */
+	        if (i==1)
+			 return "rgb(255,99,71)";
+            if (i==2)
+			 return "rgb(255,69,0)";
+      else
+              return "rgb(255,0,0)";
 			});
       legend.selectAll("text")
 	      .data(oColorScaleDefn)
 	      .enter()
 	      .append("text")
 	      .attr("x", (width - padding*1.5)+14)
-	      .attr("y", function(d,i){return padding/2+i*12+8;})
-	      .attr("height", 10)
-	      .attr("width",10)
-	      .text(function (d,i) { 
-			if (i==0)
-			 return "No Data";
-			else
-			 return "<" + Math.floor(0.2*(i)*iMaxTotMetric);
-				});
-}
-function mousemoved() {
-  info.text(formatLocation(projection.invert(d3.mouse(this)), projection.scale()));
-}
-function formatLocation(p, k) {
-  var format = d3.format("." + Math.floor(Math.log(k) / 2 - 2) + "f");
-  return (p[1] < 0 ? format(-p[1]) + "°S" : format(p[1]) + "°N") + " "
-       + (p[0] < 0 ? format(-p[0]) + "°W" : format(p[0]) + "°E");
-}
-  
-  
-</script>
-<script id="jsbin-source-html" type="text/html">
-<!DOCTYPE html>
+	      .attr("y", function(d,i){return padding/2+i*12+8;})<!DOCTYPE html>
 <meta charset="utf-8">
-<title>class 5 - states</title>
+<title>class 3 - states</title>
 <style>
 body {
   position: absolute;
@@ -201,11 +186,13 @@ path {
 }
 </style>
 
-<script src="https://d3js.org/d3.v4.min.js"><\/script>
-<script src="https://d3js.org/topojson.v2.min.js"><\/script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/topojson.v2.min.js"></script>
+
 <body>
     // Global variable for state data
 var state_data;
+
 // Global variable for USGS data
 var usgs_data;
   
@@ -213,6 +200,7 @@ var usgs_data;
 var width = 960, height = 500, padding = 38;
 var oColorScaleDefn=["1-2",
 				"2-3","3-4%","4 and up"];
+
 var data;  // declare a global variable
 var svg = d3.select("body").append("svg")
     .attr("width", width)
@@ -247,6 +235,7 @@ var usgs = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.g
   
 // If you use this URL, you won't need your own copy of the data.
 var url = "https://umbcvis.github.io/classes/class-03/us.json"
+
   
  
   
@@ -293,6 +282,7 @@ function plotStates(error, json) {
       return (d.properties.mag >= 4.0)
     });
   }
+
   
   
  
@@ -300,9 +290,12 @@ function plotStates(error, json) {
   var ordinal = d3.scaleOrdinal()
   .domain(["1.0 - 2.0", "2.0 - 3.0", "3.0 - 4.0", "4.0 +"])
   .range([ "rgb(50, 205, 50)", "rgb(255, 255, 0)", "rgb(255, 140, 0)", "rgb(255, 0, 0)"]);
+
   var svg2 = d3.select("svg").append("svg")
   .attr("x", 825)
   .attr("y", 450);
+
+
   var legend = svg.append("g")
 	    .attr("class", "legend")
 	    .attr("x", (width - padding*1.5))
@@ -320,12 +313,13 @@ function plotStates(error, json) {
 	      .attr("width",10)
 	      .style("fill", function (d,i) {
 			if (i==0)
-			 return "rgb(255,127,80)"; /* orange */
-			else
-              var t= 80+i;
-             console.log(i);
- 
-			 return "rgb(255,127,80)";
+			 return "rgb(240,128,128)"; /* orange */
+	        if (i==1)
+			 return "rgb(255,99,71)";
+            if (i==2)
+			 return "rgb(255,69,0)";
+      else
+              return "rgb(255,0,0)";
 			});
       legend.selectAll("text")
 	      .data(oColorScaleDefn)
@@ -335,13 +329,20 @@ function plotStates(error, json) {
 	      .attr("y", function(d,i){return padding/2+i*12+8;})
 	      .attr("height", 10)
 	      .attr("width",10)
+          .style("font-size", "10px")
 	      .text(function (d,i) { 
 			if (i==0)
-			 return "No Data";
+			 return "1.0-2.0";
+            if (i==1)
+			 return "2.0-3.0";
+            if (i==2)
+			 return "3.0-4.0";
 			else
-			 return "<" + Math.floor(0.2*(i)*iMaxTotMetric);
+			 return "> 4";
 				});
+
 }
+
 function mousemoved() {
   info.text(formatLocation(projection.invert(d3.mouse(this)), projection.scale()));
 }
@@ -352,5 +353,36 @@ function formatLocation(p, k) {
 }
   
   
-<\/script>
+
 </script>
+
+
+	      .attr("height", 10)
+	      .attr("width",10)
+          .style("font-size", "10px")
+	      .text(function (d,i) { 
+			if (i==0)
+			 return "1.0-2.0";
+            if (i==1)
+			 return "2.0-3.0";
+            if (i==2)
+			 return "3.0-4.0";
+			else
+			 return "> 4";
+				});
+
+}
+
+function mousemoved() {
+  info.text(formatLocation(projection.invert(d3.mouse(this)), projection.scale()));
+}
+function formatLocation(p, k) {
+  var format = d3.format("." + Math.floor(Math.log(k) / 2 - 2) + "f");
+  return (p[1] < 0 ? format(-p[1]) + "°S" : format(p[1]) + "°N") + " "
+       + (p[0] < 0 ? format(-p[0]) + "°W" : format(p[0]) + "°E");
+}
+  
+  
+
+</script>
+
