@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>class 5 - states</title>
+<style>
+body {
+  position: absolute;
+  margin: 0px;
+}
+svg {
+  background-color: #4682b4;
+}
+.info {
+  font-family: sans-serif;
+  color: #000;
+  position: absolute;
+  top: 450px;
+  left: 800px;
+}
+path {
+  fill: #555555;
+  stroke: #aaaaaa;
+}
+</style>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/topojson.v2.min.js"></script>
+
+<body>
+    // Global variable for state data
+var state_data;
+
+// Global variable for USGS data
+var usgs_data;
+  
+<script>
+var width = 960, height = 500, padding = 38;
+var oColorScaleDefn=["1-2",
+				"2-3","3-4%","4 and up"];
+var data;  // declare a global variable
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .on("mousemove", mousemoved);
+var layer = svg.append('g');
+var layer2 = svg.append('g');
+var info = d3.select("body").append("div")
+    .attr("class", "info");
+var projection = d3.geoAlbersUsa();
+var path = d3.geoPath()
+    .projection(projection);
+  
+var pathQuake = d3.geoPath()
+    .pointRadius(5)
+    .projection(projection);
+var usgs = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
+  d3.json(usgs, plotQuakes);  
+  function plotQuakes(error, data) {
+  if (error) console.log(error);
+  
+  // Filter the small earthquakes
+  var features = data.features;
+  // Plot the earthquakes
+  layer2.selectAll("path.quake")
+      .data(features)
+    .enter().append("path")
+      .attr("class", "quake")
+  .style('fill','crimson')
+      .attr("d", path)
+}
+  
+// If you use this URL, you won't need your own copy of the data.
+var url = "https://umbcvis.github.io/classes/class-03/us.json"
+  
+ 
+  
+  
+d3.json(url, plotStates);
+function plotStates(error, json) {
+  // Create array of GeoJSON features -- this defines the global variable "data"
+  data = json.objects.us.geometries.map(function(d) { return topojson.feature(json, d); })
+  // Put your code here
+  // Plot the features
+  
+  layer.selectAll("path")
+      .data(data)
+    .enter()
+      .append("path")
+      .attr("d", path);
+  
+  /*Add Legend*/
+  
+  state_data = json.objects.us.geometries.map(
+    function(d) { 
+      return topojson.feature(json, d);
+    })
+  
+  function plotQuakes(error, json) {
+  
+    // Assign the json to a global variable "usgs_data"
+    usgs_data = json;
+    
+    // Filter the features by magnitude
+    var features1 = usgs_data.features.filter(function(d) {
+      return (d.properties.mag >= 1.0) && (d.properties.mag < 2.0)
+    });
+    
+    var features2 = usgs_data.features.filter(function(d) {
+      return (d.properties.mag >= 2.0) && (d.properties.mag < 3.0)
+    });
+  
+    var features3 = usgs_data.features.filter(function(d) {
+      return (d.properties.mag >= 3.0) && (d.properties.mag < 4.0)
+    });
+    
+    var features4 = usgs_data.features.filter(function(d) {
+      return (d.properties.mag >= 4.0)
+    });
+  }
+  
+  
+ 
+ 
+  var ordinal = d3.scaleOrdinal()
+  .domain(["1.0 - 2.0", "2.0 - 3.0", "3.0 - 4.0", "4.0 +"])
+  .range([ "rgb(50, 205, 50)", "rgb(255, 255, 0)", "rgb(255, 140, 0)", "rgb(255, 0, 0)"]);
+  var svg2 = d3.select("svg").append("svg")
+  .attr("x", 825)
+  .attr("y", 450);
+  var legend = svg.append("g")
+	    .attr("class", "legend")
+	    .attr("x", (width - padding*1.5))
+	    .attr("y", (padding))
+	    .attr("height", padding*3)
+	    .attr("width",padding*2);
+	legend.selectAll("rect")
+	      .data(oColorScaleDefn)
+      
+	      .enter()
+	      .append("rect")
+	      .attr("x", (width - padding*1.5))
+	      .attr("y", function(d,i){return padding/2+i*12;})
+	      .attr("height", 10)
+	      .attr("width",10)
+	      .style("fill", function (d,i) {
+			if (i==0)
+			 return "rgb(255,127,80)"; /* orange */
+			else
+              var t= 80+i;
+             console.log(i);
+ 
+			 return "rgb(255,127,80)";
+			});
+      legend.selectAll("text")
+	      .data(oColorScaleDefn)
+	      .enter()
+	      .append("text")
+	      .attr("x", (width - padding*1.5)+14)
+	      .attr("y", function(d,i){return padding/2+i*12+8;})
+	      .attr("height", 10)
+	      .attr("width",10)
+	      .text(function (d,i) { 
+			if (i==0)
+			 return "No Data";
+			else
+			 return "<" + Math.floor(0.2*(i)*iMaxTotMetric);
+				});
+}
+function mousemoved() {
+  info.text(formatLocation(projection.invert(d3.mouse(this)), projection.scale()));
+}
+function formatLocation(p, k) {
+  var format = d3.format("." + Math.floor(Math.log(k) / 2 - 2) + "f");
+  return (p[1] < 0 ? format(-p[1]) + "°S" : format(p[1]) + "°N") + " "
+       + (p[0] < 0 ? format(-p[0]) + "°W" : format(p[0]) + "°E");
+}
+  
+  
+</script>
+<script id="jsbin-source-html" type="text/html">
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>class 5 - states</title>
+<style>
+body {
+  position: absolute;
+  margin: 0px;
+}
+svg {
+  background-color: #4682b4;
+}
+.info {
+  font-family: sans-serif;
+  color: #000;
+  position: absolute;
+  top: 450px;
+  left: 800px;
+}
+path {
+  fill: #555555;
+  stroke: #aaaaaa;
+}
+</style>
+
+<script src="https://d3js.org/d3.v4.min.js"><\/script>
+<script src="https://d3js.org/topojson.v2.min.js"><\/script>
+<body>
+    // Global variable for state data
+var state_data;
+// Global variable for USGS data
+var usgs_data;
+  
+<script>
+var width = 960, height = 500, padding = 38;
+var oColorScaleDefn=["1-2",
+				"2-3","3-4%","4 and up"];
+var data;  // declare a global variable
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .on("mousemove", mousemoved);
+var layer = svg.append('g');
+var layer2 = svg.append('g');
+var info = d3.select("body").append("div")
+    .attr("class", "info");
+var projection = d3.geoAlbersUsa();
+var path = d3.geoPath()
+    .projection(projection);
+  
+var pathQuake = d3.geoPath()
+    .pointRadius(5)
+    .projection(projection);
+var usgs = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
+  d3.json(usgs, plotQuakes);  
+  function plotQuakes(error, data) {
+  if (error) console.log(error);
+  
+  // Filter the small earthquakes
+  var features = data.features;
+  // Plot the earthquakes
+  layer2.selectAll("path.quake")
+      .data(features)
+    .enter().append("path")
+      .attr("class", "quake")
+  .style('fill','crimson')
+      .attr("d", path)
+}
+  
+// If you use this URL, you won't need your own copy of the data.
+var url = "https://umbcvis.github.io/classes/class-03/us.json"
+  
+ 
+  
+  
+d3.json(url, plotStates);
+function plotStates(error, json) {
+  // Create array of GeoJSON features -- this defines the global variable "data"
+  data = json.objects.us.geometries.map(function(d) { return topojson.feature(json, d); })
+  // Put your code here
+  // Plot the features
+  
+  layer.selectAll("path")
+      .data(data)
+    .enter()
+      .append("path")
+      .attr("d", path);
+  
+  /*Add Legend*/
+  
+  state_data = json.objects.us.geometries.map(
+    function(d) { 
+      return topojson.feature(json, d);
+    })
+  
+  function plotQuakes(error, json) {
+  
+    // Assign the json to a global variable "usgs_data"
+    usgs_data = json;
+    
+    // Filter the features by magnitude
+    var features1 = usgs_data.features.filter(function(d) {
+      return (d.properties.mag >= 1.0) && (d.properties.mag < 2.0)
+    });
+    
+    var features2 = usgs_data.features.filter(function(d) {
+      return (d.properties.mag >= 2.0) && (d.properties.mag < 3.0)
+    });
+  
+    var features3 = usgs_data.features.filter(function(d) {
+      return (d.properties.mag >= 3.0) && (d.properties.mag < 4.0)
+    });
+    
+    var features4 = usgs_data.features.filter(function(d) {
+      return (d.properties.mag >= 4.0)
+    });
+  }
+  
+  
+ 
+ 
+  var ordinal = d3.scaleOrdinal()
+  .domain(["1.0 - 2.0", "2.0 - 3.0", "3.0 - 4.0", "4.0 +"])
+  .range([ "rgb(50, 205, 50)", "rgb(255, 255, 0)", "rgb(255, 140, 0)", "rgb(255, 0, 0)"]);
+  var svg2 = d3.select("svg").append("svg")
+  .attr("x", 825)
+  .attr("y", 450);
+  var legend = svg.append("g")
+	    .attr("class", "legend")
+	    .attr("x", (width - padding*1.5))
+	    .attr("y", (padding))
+	    .attr("height", padding*3)
+	    .attr("width",padding*2);
+	legend.selectAll("rect")
+	      .data(oColorScaleDefn)
+      
+	      .enter()
+	      .append("rect")
+	      .attr("x", (width - padding*1.5))
+	      .attr("y", function(d,i){return padding/2+i*12;})
+	      .attr("height", 10)
+	      .attr("width",10)
+	      .style("fill", function (d,i) {
+			if (i==0)
+			 return "rgb(255,127,80)"; /* orange */
+			else
+              var t= 80+i;
+             console.log(i);
+ 
+			 return "rgb(255,127,80)";
+			});
+      legend.selectAll("text")
+	      .data(oColorScaleDefn)
+	      .enter()
+	      .append("text")
+	      .attr("x", (width - padding*1.5)+14)
+	      .attr("y", function(d,i){return padding/2+i*12+8;})
+	      .attr("height", 10)
+	      .attr("width",10)
+	      .text(function (d,i) { 
+			if (i==0)
+			 return "No Data";
+			else
+			 return "<" + Math.floor(0.2*(i)*iMaxTotMetric);
+				});
+}
+function mousemoved() {
+  info.text(formatLocation(projection.invert(d3.mouse(this)), projection.scale()));
+}
+function formatLocation(p, k) {
+  var format = d3.format("." + Math.floor(Math.log(k) / 2 - 2) + "f");
+  return (p[1] < 0 ? format(-p[1]) + "°S" : format(p[1]) + "°N") + " "
+       + (p[0] < 0 ? format(-p[0]) + "°W" : format(p[0]) + "°E");
+}
+  
+  
+<\/script>
+</script>
